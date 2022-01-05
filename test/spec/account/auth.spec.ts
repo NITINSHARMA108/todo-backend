@@ -61,11 +61,10 @@ describe('POST /account', () => {
     const res = await chai
       .request(expressApp)
       .post('/account')
-      .send(["random input" ,],);
+      .send(['random input']);
 
     expect(res).to.have.status(400);
   });
-
 
   it('should return an error for duplicate email', async () => {
     await testAppContext.accountRepository.save(new Account({
