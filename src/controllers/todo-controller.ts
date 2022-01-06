@@ -25,11 +25,10 @@ export class TodoController extends BaseController {
       createTodoValidator(this.appContext),
       this.createTodo,
     );
-
   }
 
   private createTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
-    
+
     const failures: ValidationFailure[] = Validation.extractValidationErrors(
       req,
     );
