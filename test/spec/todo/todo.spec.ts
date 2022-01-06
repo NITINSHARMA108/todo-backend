@@ -45,6 +45,5 @@ describe('POST /todos', () => {
 		.post('/todos')
 		.send(['random input']);
     expect(res).to.have.status(400);
-
   });
 });

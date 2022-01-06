@@ -29,8 +29,7 @@ export class TodoController extends BaseController {
   }
 
   private createTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
-    console.log('in createTodo');
-    console.log(req.body);
+    
     const failures: ValidationFailure[] = Validation.extractValidationErrors(
       req,
     );

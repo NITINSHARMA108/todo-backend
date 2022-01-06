@@ -197,7 +197,6 @@ export class MongoStore implements IDataStore {
   private getModel<T extends BaseModel>(
     modelFactory: ModelFactory<T>,
   ): MongoosModel<Document> {
-    console.log(modelFactory.getType());
     if (modelFactory.getType() ===  Todo) {
       return todo;
     }
