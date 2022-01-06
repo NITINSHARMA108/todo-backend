@@ -8,7 +8,7 @@ import {
   ExtendedRequest,
   ValidationFailure,
 } from '@typings';
-import { createTodoValidator } from '@validators'; // validator for createtodo
+import { createTodoValidator } from '@validators'; 
 import { Todo } from '@models';
 
 export class TodoController extends BaseController {
@@ -25,8 +25,12 @@ export class TodoController extends BaseController {
       createTodoValidator(this.appContext),
       this.createTodo,
     );
+    this.router.delete(
+      `${this.basePath}/:id`,
+      this.deleteTodo,
+    )
   }
-
+  // function handles creation of a todo 
   private createTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
 
     const failures: ValidationFailure[] = Validation.extractValidationErrors(
@@ -48,4 +52,36 @@ export class TodoController extends BaseController {
     );
     res.status(201).json(todo.serialize());
   }
+
+  // // function handles deletion of a todo 
+  private deleteTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+    try{
+      const failures: ValidationFailure[] = Validation.extractValidationErrors(
+        req,
+      );
+      if (failures.length > 0) {
+        const valError = new Errors.ValidationError(
+          res.__('DEFAULT_ERRORS.INSUFFUCIENT_REQUEST'),
+          failures,
+        );
+        return next(valError);
+      }
+      const { id } = req.params;
+      const response  = await this.appContext.todoRepository.deleteMany( { _id: id });
+      if(response.deletedCount > 0){
+        res.status(204);
+      }
+      else{
+        throw new Error('todo item not found');
+      }
+    }
+    catch(err){
+      const valError = new Errors.ValidationError(
+        res.__('DEFAULT_ERRORS.INVALID_REQUEST'),
+        err
+      );
+      return next(valError);
+    }
+  }
+
 }
