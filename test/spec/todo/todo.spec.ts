@@ -37,13 +37,23 @@ describe('POST /todos', () => {
 
     expect(res).to.have.status(201);
     expect(res.body).to.have.property('title');
+    expect(res.body).to.have.property('id');
   });
 
-  it('if incoming request data is not in json format', async () => {
+  it('if incoming request data is empty object', async () => {
     const res = await chai
 		.request(expressApp)
 		.post('/todos')
-		.send(['random input']);
+		.send({});
+    expect(res).to.have.status(400);
+  });
+  it('if incoming request title field is empty', async () => {
+    const res = await chai
+		.request(expressApp)
+		.post('/todos')
+		.send({
+      title: ''
+    });
     expect(res).to.have.status(400);
   });
 });

@@ -35,7 +35,7 @@ export class TodoController extends BaseController {
     );
     if (failures.length > 0) {
       const valError = new Errors.ValidationError(
-        res.__('DEFAULT_ERRORS.VALIDATION_FAILED'),
+        res.__('DEFAULT_ERRORS.INSUFFUCIENT_REQUEST'),
         failures,
       );
       return next(valError);
