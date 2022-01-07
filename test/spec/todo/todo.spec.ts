@@ -66,7 +66,7 @@ describe('DELETE /todos/:id', () => {
     console.log(todoItem);
     const res = await chai.request(expressApp)
     .delete(`/todos/${todoItem._id}`);
-    
+
     expect(res).to.have.status(204);
   })
 
@@ -74,6 +74,28 @@ describe('DELETE /todos/:id', () => {
     const id = '0000000000000000000000';
     const res = await chai.request(expressApp)
     .delete(`/todos/${id}`);
+   
+    expect(res).to.have.status(400);
+  })
+})
+
+describe('GET /todos/:id', () => {
+  it('todo is present in "todos" collection', async () => {
+    const title = 'creating a test todo item';
+    const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
+    console.log(todoItem);
+    const res = await chai.request(expressApp)
+    .get(`/todos/${todoItem._id}`);
+    
+    expect(res).to.have.status(200);
+    expect(res.body).to.have.property('id');
+    expect(res.body).to.have.property('title');
+  })
+
+  it('todo is not present in "todos" collection', async () => {
+    const id = '0000000000000000000000';
+    const res = await chai.request(expressApp)
+    .get(`/todos/${id}`);
 
     expect(res).to.have.status(400);
   })
