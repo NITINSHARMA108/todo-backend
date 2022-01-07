@@ -8,7 +8,7 @@ import {
   ExtendedRequest,
   ValidationFailure,
 } from '@typings';
-import { createTodoValidator } from '@validators'; 
+import { createTodoValidator, updateTodoValidator } from '@validators'; 
 import { Todo } from '@models';
 
 export class TodoController extends BaseController {
@@ -36,6 +36,11 @@ export class TodoController extends BaseController {
     this.router.get(
       `${this.basePath}`,
       this.allTodo
+    );
+    this.router.put(
+      `${this.basePath}/:id`,
+      updateTodoValidator(this.appContext),
+      this.updateTodo
     )
   }
   // function handles creation of a todo 
@@ -121,9 +126,10 @@ export class TodoController extends BaseController {
       } 
     }
     catch(err){
+      const failures = [ { message: err.message, field : req.params.id } ];
       const valError = new Errors.ValidationError(
-        res.__('DEFAULT_ERRORS.INVALID_GET_REQUEST'),
-        err
+        res.__('DEFAULT_ERRORS.RESOURCE_NOT_FOUND'),
+        failures
       );
       return next(valError);
     }
@@ -150,6 +156,44 @@ export class TodoController extends BaseController {
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.RESOURCE_NOT_FOUND'),
         err,
+      );
+      return next(valError);
+    }
+  }
+
+  // function handles updation of a todo item
+  private updateTodo = async (req:ExtendedRequest, res: Response, next: NextFunction) => {
+    try{
+      const failures: ValidationFailure[] = Validation.extractValidationErrors(
+        req,
+      );
+      if (failures.length > 0) {
+        const valError = new Errors.ValidationError(
+          res.__('DEFAULT_ERRORS.INSUFFUCIENT_REQUEST'),
+          failures,
+        );
+        return next(valError);
+      }
+      const { title } = req.body;
+      const { id } = req.params;
+      const updatedTodo = await this.appContext.todoRepository.update({_id: id}, { title });
+      let flag = false;
+      for( let key in updatedTodo){
+        if(key === 'title'){
+          flag = true;
+        }
+      }
+      if(flag){
+      res.status(200).json(updatedTodo.serialize());
+      }
+      else{
+        throw new Error('todo item not found');
+      }
+    } catch(err) {
+      const failures = [ { message: err.message, field : req.params.id } ];
+      const valError = new Errors.ValidationError(
+        res.__('DEFAULT_ERRORS.RESOURCE_NOT_FOUND'),
+        failures,
       );
       return next(valError);
     }

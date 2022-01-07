@@ -27,6 +27,7 @@ before(async () => {
   expressApp = app.expressApp;
 });
 
+// test case for creating a todo item
 describe('POST /todos', () => {
   it('it should create a new todo item', async () => {
     const res = await chai
@@ -59,11 +60,11 @@ describe('POST /todos', () => {
   });
 });
 
+// test case for deleting a todo item
 describe('DELETE /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
     const title = 'creating a test todo item';
     const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
-    console.log(todoItem);
     const res = await chai.request(expressApp)
     .delete(`/todos/${todoItem._id}`);
 
@@ -78,12 +79,11 @@ describe('DELETE /todos/:id', () => {
     expect(res).to.have.status(400);
   })
 })
-
+// test case for get single todo
 describe('GET /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
     const title = 'creating a test todo item';
     const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
-    console.log(todoItem);
     const res = await chai.request(expressApp)
     .get(`/todos/${todoItem._id}`);
     
@@ -101,6 +101,7 @@ describe('GET /todos/:id', () => {
   })
 })
 
+// test case for fetching all todo items
 describe('GET /todos', () => {
   it('requesting all todo items from "todos" collection', async () => {
     const res = await chai.request(expressApp)
@@ -108,3 +109,59 @@ describe('GET /todos', () => {
     expect(res).to.have.status(200);  
   }) 
 })
+
+// test for todo updation
+describe('PUT /todos/:id', () => {
+  it('it should create a new todo item and then update it ', async () => {
+    const todo = await testAppContext.todoRepository.save(new Todo({
+      title: 'first step: todo creation',
+    }))
+    const res = await chai
+      .request(expressApp)
+      .put(`/todos/${todo._id}`)
+      .send({
+        title: 'second step: todo updation',
+      });
+
+    expect(res).to.have.status(200);
+    expect(res.body).to.have.property('title');
+    expect(res.body).to.have.property('id');
+  });
+
+  it('if request body is an empty object ', async () => {
+    const todo = await testAppContext.todoRepository.save(new Todo({
+      title: 'first step: todo creation',
+    }))
+    const res = await chai
+      .request(expressApp)
+      .put(`/todos/${todo._id}`)
+      .send({
+      });
+
+    expect(res).to.have.status(400);
+  });
+
+  it('ithe title property in req object is empty string ', async () => {
+    const todo = await testAppContext.todoRepository.save(new Todo({
+      title: 'first step: todo creation',
+    }))
+    const res = await chai
+      .request(expressApp)
+      .put(`/todos/${todo._id}`)
+      .send({
+        title: '',
+      });
+
+    expect(res).to.have.status(400);
+  });
+
+  it('if requested todo item is not present in database', async () => {
+    const res = await chai
+		.request(expressApp)
+		.put('/todos/update')
+		.send({
+      title: 'item not present in database'
+    });
+    expect(res).to.have.status(400);
+  });
+});
