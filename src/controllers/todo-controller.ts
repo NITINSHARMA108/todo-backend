@@ -32,6 +32,10 @@ export class TodoController extends BaseController {
     this.router.get(
       `${this.basePath}/:id`,
       this.getTodo
+    );
+    this.router.get(
+      `${this.basePath}`,
+      this.allTodo
     )
   }
   // function handles creation of a todo 
@@ -80,7 +84,7 @@ export class TodoController extends BaseController {
       }
     }
     catch(err){
-      console.log(err);
+      
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.INVALID_REQUEST'),
         err
@@ -120,6 +124,32 @@ export class TodoController extends BaseController {
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.INVALID_GET_REQUEST'),
         err
+      );
+      return next(valError);
+    }
+  }
+
+  private allTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+    try {
+      const failures: ValidationFailure[] = Validation.extractValidationErrors(
+        req,
+      );
+      if (failures.length > 0) {
+        const valError = new Errors.ValidationError(
+          res.__('DEFAULT_ERRORS.INSUFFUCIENT_REQUEST'),
+          failures,
+        );
+        return next(valError);
+      }
+      let todoItems: Todo[] = await this.appContext.todoRepository.getAll();
+      let todos = todoItems.map((todo) =>{
+        return todo.serialize();
+      })
+      res.status(200).json(Array.from(todos));
+    } catch(err) {
+      const valError = new Errors.ValidationError(
+        res.__('DEFAULT_ERRORS.RESOURCE_NOT_FOUND'),
+        err,
       );
       return next(valError);
     }
