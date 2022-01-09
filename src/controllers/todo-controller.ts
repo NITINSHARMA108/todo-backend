@@ -74,6 +74,7 @@ export class TodoController extends BaseController {
       const response  = await this.appContext.todoRepository.deleteMany( { _id: id });
       if(response.deletedCount > 0){
         res.status(204);
+        res.end();
       }
       else{
         throw new Error('todo item not found');
