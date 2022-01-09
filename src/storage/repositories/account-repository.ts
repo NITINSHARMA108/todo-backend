@@ -10,7 +10,7 @@ export class AccountRepository extends BaseRepository<Account> {
   protected modelFactory(): ModelFactory<Account> {
     return {
       getType() {
-        return typeof Account;
+        return Account;
       },
       create(json: any) {
         return new Account(json);
