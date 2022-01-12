@@ -31,6 +31,10 @@ export class TodoController extends BaseController {
     this.router.delete(
       `${this.basePath}/:id`,
       this.deleteTodo,
+    );
+    this.router.get(
+      `${this.basePath}/:id`,
+      this.getTodo
     )
   }
   // function handles creation of a todo 
@@ -83,6 +87,7 @@ export class TodoController extends BaseController {
       }
     }
     catch(err){
+
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.INVALID_REQUEST'),
         err
@@ -91,5 +96,41 @@ export class TodoController extends BaseController {
     }
   }
 
+
+  private getTodo = async (req: ExtendedRequest, res: Response, next: NextFunction)=> {
+    try{
+      const failures: ValidationFailure[] = Validation.extractValidationErrors(
+        req,
+      );
+      if (failures.length > 0) {
+        const valError = new Errors.ValidationError(
+          res.__('DEFAULT_ERRORS.INSUFFUCIENT_REQUEST'),
+          failures,
+        );
+        return next(valError);
+      }
+      const { id } = req.params;
+      const todoItem  = await this.appContext.todoRepository.findById(id);
+      let flag = false;
+      for(let key in todoItem){
+        if(key === 'title'){
+          flag = true;
+        }
+      }
+      if(flag){
+        res.status(200).json(todoItem.serialize());
+      }
+      else{
+        throw new Error('todo item not found');
+      } 
+    }
+    catch(err){
+      const valError = new Errors.ValidationError(
+        res.__('DEFAULT_ERRORS.INVALID_GET_REQUEST'),
+        err
+      );
+      return next(valError);
+    }
+  }
 
 }
