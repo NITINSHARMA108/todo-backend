@@ -12,7 +12,9 @@ import { respositoryContext, testAppContext } from '../../mocks/app-context';
 import { AuthHelper } from '../../../src/helpers';
 import { App } from '../../../src/server';
 import { Todo } from '../../../src/models';
+
 import { delay } from 'lodash';
+
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -59,6 +61,7 @@ describe('POST /todos', () => {
   });
 });
 
+
 describe('DELETE /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
     const title = 'creating a test todo item';
@@ -74,10 +77,11 @@ describe('DELETE /todos/:id', () => {
     const id = '0000000000000000000000';
     const res = await chai.request(expressApp)
     .delete(`/todos/${id}`);
-   
+
     expect(res).to.have.status(400);
   })
 })
+
 
 describe('GET /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
@@ -100,3 +104,4 @@ describe('GET /todos/:id', () => {
     expect(res).to.have.status(400);
   })
 })
+

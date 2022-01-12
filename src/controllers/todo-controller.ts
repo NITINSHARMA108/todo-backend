@@ -8,7 +8,9 @@ import {
   ExtendedRequest,
   ValidationFailure,
 } from '@typings';
-import { createTodoValidator } from '@validators'; 
+
+import { createTodoValidator } from '@validators'; // validator for createtodo
+
 import { Todo } from '@models';
 
 export class TodoController extends BaseController {
@@ -25,6 +27,7 @@ export class TodoController extends BaseController {
       createTodoValidator(this.appContext),
       this.createTodo,
     );
+
     this.router.delete(
       `${this.basePath}/:id`,
       this.deleteTodo,
@@ -35,6 +38,8 @@ export class TodoController extends BaseController {
     )
   }
   // function handles creation of a todo 
+
+
   private createTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
 
     const failures: ValidationFailure[] = Validation.extractValidationErrors(
@@ -56,6 +61,7 @@ export class TodoController extends BaseController {
     );
     res.status(201).json(todo.serialize());
   }
+
 
   // // function handles deletion of a todo 
   private deleteTodo = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
@@ -81,7 +87,7 @@ export class TodoController extends BaseController {
       }
     }
     catch(err){
-      console.log(err);
+
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.INVALID_REQUEST'),
         err
@@ -89,6 +95,7 @@ export class TodoController extends BaseController {
       return next(valError);
     }
   }
+
 
   private getTodo = async (req: ExtendedRequest, res: Response, next: NextFunction)=> {
     try{
@@ -125,4 +132,5 @@ export class TodoController extends BaseController {
       return next(valError);
     }
   }
+
 }
