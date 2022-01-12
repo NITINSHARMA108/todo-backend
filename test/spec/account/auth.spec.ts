@@ -37,7 +37,6 @@ describe('POST /account', () => {
         email: 'jack.ryan@jalantechnologies.com',
         password: 'password',
       });
-
     expect(res).to.have.status(201);
     expect(res.body).to.have.property('id');
     expect(res.body).to.have.property('firstName');
