@@ -5,9 +5,11 @@
 		"LOGIN_AUTHENTICATION_FAILED": "Invalid credentials. Please check your email and password and try again.",
 		"RESOURCE_NOT_FOUND": "Requested resource not found.",
 		"VALIDATION_FAILED": "Validation failed. Please modify the request and try again.",
+
 		"INSUFFUCIENT_REQUEST": "Parameters in request are missing",
 		"INVALID_REQUEST": "todo item is not present in database. Delete action failed",
 		"INVALID_GET_REQUEST": "todo item is not present in database"
+
 	},
 	"VALIDATION_ERRORS": {
 		"INVALID_EMAIL": "Please specify valid email address",
