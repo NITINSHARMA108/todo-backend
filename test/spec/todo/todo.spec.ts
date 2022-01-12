@@ -12,6 +12,7 @@ import { respositoryContext, testAppContext } from '../../mocks/app-context';
 import { AuthHelper } from '../../../src/helpers';
 import { App } from '../../../src/server';
 import { Todo } from '../../../src/models';
+
 import { delay } from 'lodash';
 
 chai.use(chaiHttp);
@@ -27,7 +28,9 @@ before(async () => {
   expressApp = app.expressApp;
 });
 
+
 // test case for creating a todo item
+
 describe('POST /todos', () => {
   it('it should create a new todo item', async () => {
     const res = await chai
@@ -60,11 +63,14 @@ describe('POST /todos', () => {
   });
 });
 
+
 // test case for deleting a todo item
+
 describe('DELETE /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
     const title = 'creating a test todo item';
     const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
+
     const res = await chai.request(expressApp)
     .delete(`/todos/${todoItem._id}`);
 
@@ -75,15 +81,18 @@ describe('DELETE /todos/:id', () => {
     const id = '0000000000000000000000';
     const res = await chai.request(expressApp)
     .delete(`/todos/${id}`);
+
    
     expect(res).to.have.status(400);
   })
 })
 // test case for get single todo
+
 describe('GET /todos/:id', () => {
   it('todo is present in "todos" collection', async () => {
     const title = 'creating a test todo item';
     const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
+
     const res = await chai.request(expressApp)
     .get(`/todos/${todoItem._id}`);
     
@@ -101,7 +110,9 @@ describe('GET /todos/:id', () => {
   })
 })
 
+
 // test case for fetching all todo items
+
 describe('GET /todos', () => {
   it('requesting all todo items from "todos" collection', async () => {
     const res = await chai.request(expressApp)
@@ -109,6 +120,7 @@ describe('GET /todos', () => {
     expect(res).to.have.status(200);  
   }) 
 })
+
 
 // test for todo updation
 describe('PUT /todos/:id', () => {
@@ -165,3 +177,4 @@ describe('PUT /todos/:id', () => {
     expect(res).to.have.status(400);
   });
 });
+
