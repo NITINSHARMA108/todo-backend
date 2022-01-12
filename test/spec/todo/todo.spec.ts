@@ -13,6 +13,9 @@ import { AuthHelper } from '../../../src/helpers';
 import { App } from '../../../src/server';
 import { Todo } from '../../../src/models';
 
+import { delay } from 'lodash';
+
+
 chai.use(chaiHttp);
 const expect = chai.expect;
 let expressApp: Application;
@@ -57,3 +60,25 @@ describe('POST /todos', () => {
     expect(res).to.have.status(400);
   });
 });
+
+
+describe('DELETE /todos/:id', () => {
+  it('todo is present in "todos" collection', async () => {
+    const title = 'creating a test todo item';
+    const todoItem = await testAppContext.todoRepository.save(new Todo({ title,}));
+    console.log(todoItem);
+    const res = await chai.request(expressApp)
+    .delete(`/todos/${todoItem._id}`);
+    
+    expect(res).to.have.status(204);
+  })
+
+  it('todo is not present in "todos" collection', async () => {
+    const id = '0000000000000000000000';
+    const res = await chai.request(expressApp)
+    .delete(`/todos/${id}`);
+
+    expect(res).to.have.status(400);
+  })
+})
+

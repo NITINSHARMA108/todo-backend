@@ -191,7 +191,7 @@ export class MongoStore implements IDataStore {
       .exec()
       .then((result) => {
         return { success: true, deletedCount: result.deletedCount };
-      });
+      })
   }
 
   private getModel<T extends BaseModel>(
