@@ -105,3 +105,12 @@ describe('GET /todos/:id', () => {
   })
 })
 
+
+describe('GET /todos', () => {
+  it('requesting all todo items from "todos" collection', async () => {
+    const res = await chai.request(expressApp)
+    .get(`/todos`);
+    expect(res).to.have.status(200);  
+  }) 
+})
+
